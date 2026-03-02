@@ -1,5 +1,5 @@
-## Description
-<!-- Summary of changes and why they're needed -->
+﻿## Description
+<!-- A clear and concise description of the changes -->
 
 ## Type of Change
 - [ ] Bug fix
@@ -7,10 +7,15 @@
 - [ ] Breaking change
 - [ ] Documentation update
 
-## Checklist
+## Testing
 - [ ] I have tested this locally
+- [ ] Tests pass
+
+## Checklist
+- [ ] Code follows the style guidelines
 - [ ] I have updated relevant documentation
 - [ ] Commit messages are clear and descriptive
+- [ ] No breaking changes introduced
 
 ## Related Issues
-<!-- Reference any related issues (e.g., Closes #123) -->
+<!-- Reference related issues (e.g., Closes #123) -->
