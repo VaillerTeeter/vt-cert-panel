@@ -1,31 +1,31 @@
-﻿# Contributing to VT Cert Panel
+﻿# 贡献指南
 
-Thank you for your interest in contributing! Here's how you can help.
+感谢您有兴趣为本项目做出贡献！以下是您可以提供帮助的方式。
 
-## Code of Conduct
-Please review our [Code of Conduct](CODE_OF_CONDUCT.md) before participating.
+## 行为准则
+在参与之前，请先阅读我们的[行为准则](CODE_OF_CONDUCT.md)。
 
-## Getting Started
-1. Fork the repository
-2. Create a feature branch (\git checkout -b feature/amazing-feature\)
-3. Commit your changes (\git commit -am 'feat: add amazing feature'\)
-4. Push to the branch (\git push origin feature/amazing-feature\)
-5. Open a Pull Request
+## 开始贡献
+1. Fork 本仓库
+2. 创建功能分支 (\git checkout -b feature/amazing-feature\)
+3. 提交您的更改 (\git commit -am 'feat: add amazing feature'\)
+4. 推送到分支 (\git push origin feature/amazing-feature\)
+5. 创建 Pull Request
 
-## Pull Request Process
-- All PRs require at least 1 approval
-- Please ensure tests pass
-- Update documentation as needed
-- Follow the PR template
+## Pull Request 流程
+- 所有 PR 至少需要 1 个审批
+- 请确保测试通过
+- 根据需要更新文档
+- 遵循 PR 模板
 
-## Reporting Issues
-- Check existing issues before creating a new one
-- Provide clear description and reproduction steps
-- Include environment details
+## 报告问题
+- 在创建新 Issue 之前检查现有问题
+- 提供清晰的描述和重现步骤
+- 包含环境详细信息
 
-## Code Style
-- Follow PEP 8 / ESLint standards as applicable
-- Write clear variable and function names
-- Add comments for complex logic
+## 代码风格
+- 遵循 PEP 8 / ESLint 标准（如适用）
+- 使用清晰的变量和函数名称
+- 为复杂逻辑添加注释
 
-Thank you for contributing!
+感谢您的贡献！

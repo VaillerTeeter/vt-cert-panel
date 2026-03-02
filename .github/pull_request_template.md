@@ -1,21 +1,21 @@
-﻿## Description
-<!-- A clear and concise description of the changes -->
+﻿## 描述
+<!-- 对更改进行清晰简洁的描述 -->
 
-## Type of Change
-- [ ] Bug fix
-- [ ] New feature
-- [ ] Breaking change
-- [ ] Documentation update
+## 更改类型
+- [ ] Bug 修复
+- [ ] 新功能
+- [ ] 破坏性更改
+- [ ] 文档更新
 
-## Testing
-- [ ] I have tested this locally
-- [ ] Tests pass
+## 测试
+- [ ] 我已在本地测试过
+- [ ] 测试通过
 
-## Checklist
-- [ ] Code follows the style guidelines
-- [ ] I have updated relevant documentation
-- [ ] Commit messages are clear and descriptive
-- [ ] No breaking changes introduced
+## 检查清单
+- [ ] 代码遵循样式指南
+- [ ] 我已更新相关文档
+- [ ] 提交信息清晰且具有描述性
+- [ ] 没有引入破坏性更改
 
-## Related Issues
-<!-- Reference related issues (e.g., Closes #123) -->
+## 相关 Issue
+<!-- 引用相关 issue（例如：Closes #123）-->

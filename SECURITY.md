@@ -1,19 +1,19 @@
-﻿# Security Policy
+﻿# 安全政策
 
-## Reporting Security Issues
-**Do NOT open a public issue for security vulnerabilities.**
+## 报告安全问题
+**请勿公开发布安全漏洞相关的 Issue。**
 
-Please email security concerns privately to VaillerTeeter or open a GitHub Security Advisory.
+请通过私密方式将安全问题发送邮件给 VaillerTeeter，或者创建 GitHub 安全公告。
 
-## Supported Versions
-Security updates are provided for the latest version and one prior major version.
+## 支持的版本
+我们为最新版本和上一个主要版本提供安全更新。
 
-## Security Features
-- Private vulnerability reporting
-- Secret scanning enabled
-- Dependabot security updates enabled
-- All PRs require review before merge
-- Branch protection enforced on main branches
+## 安全特性
+- 私密漏洞报告
+- 已启用密钥扫描
+- 已启用 Dependabot 安全更新
+- 所有 PR 在合并前需要审查
+- 主分支强制分支保护
 
-## Commitment
-We take security seriously and will respond to legitimate security concerns promptly.
+## 承诺
+我们非常重视安全问题，将及时响应合法的安全问题。
