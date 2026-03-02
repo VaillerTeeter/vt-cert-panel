@@ -1,32 +1,32 @@
 ﻿---
-name: Bug Report
-about: Report a bug to help us improve
+name: Bug 报告
+about: 报告 Bug 以帮助我们改进
 title: '[BUG] '
 labels: bug
 assignees: ''
 ---
 
-## Describe the Bug
-A clear and concise description of what the bug is.
+## 描述 Bug
+对 Bug 进行清晰简洁的描述。
 
-## Steps to Reproduce
+## 重现步骤
 1. 
 2. 
 3. 
 
-## Expected Behavior
-What you expected to happen.
+## 期望行为
+您期望发生什么。
 
-## Actual Behavior
-What actually happened.
+## 实际行为
+实际发生了什么。
 
-## Environment
-- OS: 
-- Version/Commit:
-- Python/Node version (if applicable):
+## 环境
+- 操作系统：
+- 版本/提交：
+- Python/Node 版本（如适用）：
 
-## Screenshots
-If applicable, add screenshots to help explain the problem.
+## 截图
+如适用，添加截图以帮助解释问题。
 
-## Additional Context
-Any other details that might help diagnose the issue.
+## 附加信息
+可能有助于诊断问题的其他详细信息。

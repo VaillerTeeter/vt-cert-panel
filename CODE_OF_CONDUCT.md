@@ -1,26 +1,26 @@
-﻿# Code of Conduct
+﻿# 行为准则
 
-## Our Commitment
-We are committed to providing a welcoming and inclusive environment for all contributors, regardless of age, body size, disability, ethnicity, gender identity, experience level, nationality, personal appearance, or other characteristics.
+## 我们的承诺
+我们致力于为所有贡献者提供友好和包容的环境，无论其年龄、体型、残疾、种族、性别认同、经验水平、国籍、个人外貌或其他特征如何。
 
-## Our Standards
-Examples of behavior that contributes to creating a positive environment include:
-- Using welcoming and inclusive language
-- Being respectful of differing opinions
-- Accepting constructive criticism gracefully
-- Focusing on what is best for the community
+## 我们的标准
+有助于创造积极环境的行为示例包括：
+- 使用友好和包容的语言
+- 尊重不同的观点
+- 优雅地接受建设性批评
+- 关注对社区最有利的事情
 
-Examples of unacceptable behavior include:
-- Harassment or discrimination
-- Personal attacks
-- Offensive comments about identity
-- Other unprofessional conduct
+不可接受的行为示例包括：
+- 骚扰或歧视
+- 人身攻击
+- 关于身份的冒犯性评论
+- 其他不专业的行为
 
-## Enforcement
-Project maintainers have the right and responsibility to remove, edit, or reject contributions that do not align with this code of conduct.
+## 执行
+项目维护者有权利和责任删除、编辑或拒绝不符合本行为准则的贡献。
 
-## Reporting
-Report violations to VaillerTeeter via email or private message.
+## 举报
+请通过电子邮件或私信向 VaillerTeeter 报告违规行为。
 
-## Attribution
-This Code of Conduct is adapted from the Contributor Covenant, version 2.0.
+## 来源
+本行为准则改编自《贡献者公约》2.0 版本。
