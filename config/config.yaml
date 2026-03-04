@@ -1,0 +1,79 @@
+# 文件：config.yaml | 用途：应用程序主配置文件（YAML 格式）| 关键字段：server、storage、technitium、acme、autoRenewal
+# 此文件为模板：可直接使用，也可仅保留默认值并通过环境变量覆盖敏感信息（推荐容器场景）
+# 注意：不要将包含真实密钥与 token 的配置文件提交到代码库，使用 .env.local 和 config.local.yaml（均在 .gitignore 中）
+
+# === 服务器配置 === | 用途：HTTP 服务器监听地址与端口设置
+server:
+    # address | 含义：HTTP 服务器监听的地址与端口 | 类型：string | 默认值：":8080" | 必需：否
+    # 格式说明：":8080" = 在所有网卡上监听 8080 端口 | "localhost:3000" = 仅在本机监听 3000 端口
+    address: ":8080"
+
+# === 存储配置 === | 用途：数据库和文件存储路径设置
+storage:
+    # dataDir | 含义：应用程序数据存储的根目录 | 类型：string | 默认值："./data" | 必需：否
+    # 作用范围：SQLite 数据库、证书文件、ACME 账户密钥都存储在此目录下
+    dataDir: "./data"
+    # sqlitePath | 含义：SQLite 数据库文件路径 | 类型：string | 默认值："./data/app.db" | 必需：否
+    # 作用范围：存储用户、会话、证书元数据等
+    sqlitePath: "./data/app.db"
+    # certsDir | 含义：SSL/TLS 证书和私钥存储目录 | 类型：string | 默认值："./data/certs" | 必需：否
+    # 作用范围：每个证书存储在自己的子目录中，包含 fullchain.pem 和 privkey.pem
+    certsDir: "./data/certs"
+    # accountKeyDir | 含义：ACME 账户私钥存储目录 | 类型：string | 默认值："./data/acme" | 必需：否
+    # 作用范围：存储与 Let's Encrypt 交互的账户私钥（account.json）
+    # ⚠️ 安全提示：此目录的文件极其敏感，不能泄露或损坏，否则无法续期证书
+    accountKeyDir: "./data/acme"
+
+# === 认证配置 === | 用途：用户会话与认证参数设置
+auth:
+    # sessionTtlHours | 含义：用户会话的有效期（小时）| 类型：int | 默认值：24 | 必需：否
+    # 作用范围：超过此时间未活动的会话将失效，用户需重新登录
+    # 示例：设置为 1 = 1 小时 | 设置为 168 = 7 天（一周）
+    sessionTtlHours: 24
+
+# === ACME 配置 === | 用途：Let's Encrypt 证书申请参数
+acme:
+    # directoryUrl | 含义：ACME 服务器目录 URL | 类型：string | 默认值："https://acme-v02.api.letsencrypt.org/directory" | 必需：否
+    # 作用范围：与 Let's Encrypt 交互的 API 端点
+    # 生产环境（推荐）：https://acme-v02.api.letsencrypt.org/directory
+    # 测试环境（开发调试）：https://acme-staging-v02.api.letsencrypt.org/directory（颁发的证书不受信任，仅用于测试）
+    directoryUrl: "https://acme-v02.api.letsencrypt.org/directory"
+    # ⚠️ userEmail | 含义：Let's Encrypt 通知邮箱 | 类型：string | 默认值："" （必须填写）| 必需：是
+    # 作用范围：证书过期前的邮件提醒、账户恢复等重要通知
+    # 安全提示：请使用真实有效的邮箱地址，便于接收过期警告和安全通知
+    # 示例：admin@example.com
+    userEmail: ""
+
+# === Technitium DNS 配置 === | 用途：与 Technitium DNS 服务交互的参数
+technitium:
+    # ⚠️ baseUrl | 含义：Technitium DNS API 服务地址 | 类型：string | 默认值："" （必须填写）| 必需：是
+    # 作用范围：所有 DNS 记录操作（TXT 记录的添加/删除）都通过此 URL 进行
+    # 格式说明：例如 http://192.168.1.100:5380 或 http://dns.example.com:5380
+    # 重要：不包含末尾 /
+    baseUrl: "http://your-technitium-host:5380"
+    # ⚠️ token | 含义：Technitium API 认证 token（API Key）| 类型：string | 默认值："" （必须填写）| 必需：是
+    # 安全提示：此 token 相当于密码，绝不要提交到代码库，泄露后应立即更新 | 获取方法：在 Technitium 控制台 -> Settings -> API 中生成
+    token: ""
+    # defaultTtl | 含义：DNS TXT 记录的默认 TTL（生存时间，单位：秒）| 类型：int | 默认值：120 | 必需：否
+    # 作用范围：在添加临时 TXT 记录时使用此值（用于 ACME DNS-01 验证）
+    # 一般无需修改，保持默认值即可
+    defaultTtl: 120
+    # propagationSec | 含义：DNS 记录传播时间（单位：秒）| 类型：int | 默认值：120 | 必需：否
+    # 作用范围：在添加 TXT 记录后，ACME 验证前等待的时间（等待 DNS 全球传播）
+    # 一般无需修改，保持默认值即可
+    propagationSec: 120
+
+# === 自动续期配置 === | 用途：证书自动续期的时间表与策略
+autoRenewal:
+    # enabled | 含义：是否启用自动续期功能 | 类型：bool | 默认值：true | 必需：否
+    # true = 启用（推荐），后台 worker 定期检查并续期 | false = 禁用，仅手动申请证书
+    enabled: true
+    # checkIntervalHour | 含义：续期检查间隔（单位：小时）| 类型：int | 默认值：24 | 必需：否
+    # 作用范围：后台 worker 每隔多久检查一次证书的过期时间
+    # 示例：24 = 每天检查一次 | 1 = 每小时检查一次
+    checkIntervalHour: 24
+    # renewBeforeDays | 含义：距离过期多少天时开始续期 | 类型：int | 默认值：30 | 必需：否
+    # 作用范围：当证书剩余有效期 <= renewBeforeDays 时，触发续期
+    # 示例：30 = 提前 30 天续期 | 7 = 提前 7 天续期
+    # 建议：保持 >= 7 天，给 ACME 验证留足时间
+    renewBeforeDays: 30
