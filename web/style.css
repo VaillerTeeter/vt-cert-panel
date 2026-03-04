@@ -1,0 +1,70 @@
+/* 文件：style.css | 用途：证书管理面板的全局样式定义 | 关键颜色/样式：主色蓝色 #2563eb、成功绿色 #1e7e34、错误红色 #c62828、卡片背景白色、浅灰背景 #f4f6fb */
+
+/* === 全局样式 === 说明：页面全局字体、颜色、边距基础设置 */
+
+/* 根元素样式 - 定义整个页面的默认字体族（优先使用微软雅黑支持中文，降级方案为无衬线字体） */
+:root { font-family: "Microsoft YaHei", sans-serif; }
+
+/* 页面背景与外边距 - 设置淡蓝灰色背景增强视觉舒适度，清除浏览器默认外边距 */
+body { background: #f4f6fb; margin: 0; }
+
+/* === 布局与容器 === 说明：主容器布局、最大宽度限制与内边距设置 */
+
+/* 主容器样式 - 限制最大宽度为 960px（桌面版适配宽度），水平居中对齐，两侧留有 16px 内边距便于移动设备显示 */
+.container { max-width: 960px; margin: 32px auto; padding: 0 16px; }
+
+/* === 排版与标题 === 说明：页面标题、副标题的字号、颜色、间距设置 */
+
+/* 主标题（h1）样式 - 设置 h1 元素下外边距为 6px，与副标题紧密接近形成视觉层级 */
+h1 { margin-bottom: 6px; }
+
+/* 副标题样式 - 使用灰色 #666 文字，上外边距为 0 避免与 h1 重叠，提供对功能的简要说明 */
+.sub { color: #666; margin-top: 0; }
+
+/* === 卡片样式 === 说明：信息卡片的背景、圆角、阴影、内边距等视觉风格 */
+
+/* 卡片组件样式 - 白色背景、10px 圆角（温和的视觉效果）、内边距 16px、下外边距 16px（卡片间距调整）、顶部阴影增强 3D 效果 */
+.card { background: #fff; border-radius: 10px; padding: 16px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+
+/* 隐藏类样式 - 使用 display: none 完全隐藏元素（不占用页面空间），JavaScript 通过切换 hidden 类控制功能区的显示/隐藏 */
+.hidden { display: none; }
+
+/* === 表单样式 === 说明：标签、输入框、文本域的样式化 */
+
+/* 表单标签样式 - 块级元素（独占一行）、字号 14px、上外边距 10px、下外边距 6px（紧密贴近输入框）、深灰色字体 #444 提强可读性 */
+label { display: block; font-size: 14px; margin: 10px 0 6px; color: #444; }
+
+/* 输入框与文本域统一样式 - 宽度 100%（适配父容器）、border-box 确保边框包含在宽度内、浅灰边框 #d5d9e2、8px 圆角、内边距 10px、字号 14px 与网页文本一致 */
+input, textarea { width: 100%; box-sizing: border-box; border: 1px solid #d5d9e2; border-radius: 8px; padding: 10px; font-size: 14px; }
+
+/* === 按钮样式 === 说明：主按钮与次要按钮的颜色、尺寸、交互效果 */
+
+/* 主按钮样式 - 蓝色背景 #2563eb（品牌主色代表主要操作）、白色文字、无边框、8px 圆角、内边距 10px 14px（竖横不均匀以优化视觉）、cursor: pointer 表示可点击 */
+button { margin-top: 12px; background: #2563eb; color: #fff; border: 0; border-radius: 8px; padding: 10px 14px; cursor: pointer; }
+
+/* 次要按钮样式 - 灰色背景 #475569（降低视觉权重），用于"退出登录"等非核心操作，避免用户误触主要功能 */
+button.secondary { background: #475569; }
+
+/* === 布局辅助类 === 说明：弹性盒子布局相关的样式 */
+
+/* 弹性容器样式 - 使用 flexbox 布局、竖直轴对齐（align-items: center 使子元素垂直居中），实现灵活的水平排列 */
+.row { display: flex; align-items: center; }
+
+/* 两端对齐样式 - 搭配 .row 使用，justify-content: space-between 使子元素分别靠左靠右（如：标题与退出按钮分离） */
+.between { justify-content: space-between; }
+
+/* === 表格样式 === 说明：证书列表表格的边框、对齐、间距设置 */
+
+/* 表格主体样式 - 宽度 100%（占满容器）、collapse 模式合并相邻边框避免重复、上外边距 10px 与上方内容分离 */
+table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+
+/* 表头与单元格样式 - 下边框 1px 浅灰色分隔每一行、左对齐文本、内边距 10px 8px（竖横不均匀保留更多竖直空间）、字号 13px 稍小便于表格信息密集展示、top 对齐便于查看所有内容 */
+th, td { border-bottom: 1px solid #eee; text-align: left; padding: 10px 8px; font-size: 13px; vertical-align: top; }
+
+/* === 消息提示样式 === 说明：操作结果提示（成功/失败）的颜色与显示效果 */
+
+/* 消息提示默认样式（错误状态） - 最小高度 20px 确保空消息也占据空间避免布局跳动、红色 #c62828 表示错误/警告，当无消息时 display: none 状态下也不显示 */
+.msg { min-height: 20px; color: #c62828; }
+
+/* 成功消息样式 - 绿色 #1e7e34 表示操作成功，与错误样式互斥通过 JavaScript 动态切换类名实现 */
+.ok { color: #1e7e34; }

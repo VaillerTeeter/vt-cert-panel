@@ -1,0 +1,120 @@
+<!-- 文件：index.html | 用途：证书管理面板的前端页面结构 | 关键区域：setupCard（管理员初始化）、loginCard（登录表单）、panelCard（证书管理主面板） -->
+<!doctype html>
+<!-- 文档类型声明：使用 HTML5 标准 -->
+<html lang="zh-CN">
+    <!-- 根元素，设置页面语言为简体中文（用于搜索引擎与屏幕阅读器） -->
+    <head>
+        <!-- 文档头部区域：包含元数据、标题与外部资源链接 -->
+        <meta charset="UTF-8" />
+        <!-- 字符编码声明：使用 UTF-8 编码，支持中文等多语言字符 -->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <!-- 视口元标签：适配移动设备，设置初始缩放比例为 1.0（响应式设计必备） -->
+        <title>{{.Title}}</title>
+        <!-- 页面标题：使用 Go 模板语法动态渲染（后端传入 Title 变量） -->
+        <link rel="stylesheet" href="/web/style.css" />
+        <!-- 外部资源依赖：引入样式表 style.css，定义页面的视觉样式 -->
+    </head>
+    <body>
+        <!-- 文档主体区域：包含页面所有可见内容 -->
+        <main class="container">
+            <!-- 主容器：使用语义化标签 main，应用 container 样式类（居中布局） -->
+            <h1>VT Cert Panel</h1>
+            <!-- 页面主标题：显示应用名称 -->
+            <p class="sub">证书申请与管理（ACME + DNS-01 + Technitium DNS）</p>
+            <!-- 副标题：说明应用的核心功能与技术栈 -->
+
+            <!-- 区域：setupCard（管理员初始化卡片） | 用途：首次使用时创建管理员账号 | 显示条件：系统未初始化时显示，已初始化后隐藏 | 关键元素：setupUsername, setupPassword, setupBtn -->
+            <section id="setupCard" class="card hidden">
+            <!-- section 语义标签表示独立区域，id="setupCard" 用于 JavaScript 控制显示/隐藏，class="card hidden" 应用卡片样式并默认隐藏 -->
+            <h2>首次初始化管理员</h2>
+            <!-- 卡片标题：提示用户这是首次初始化操作 -->
+            <label>用户名</label>
+            <!-- 标签：提供表单字段的可访问性说明（虽未使用 for 属性，但通过位置关联下方输入框） -->
+            <!-- 输入框 id="setupUsername" | 用途：输入管理员用户名 | 触发事件：无（通过按钮提交） | 绑定函数：setupBtn 点击时读取 value -->
+            <input id="setupUsername" placeholder="请输入管理员用户名" />
+            <label>密码</label>
+            <!-- 标签：提供密码字段的可访问性说明 -->
+            <!-- 输入框 id="setupPassword" | 用途：输入管理员密码（type="password" 自动隐藏输入内容） | 触发事件：无 | 绑定函数：setupBtn 点击时读取 value -->
+            <input id="setupPassword" type="password" placeholder="请输入管理员密码" />
+            <!-- 按钮 id="setupBtn" | 用途：提交管理员初始化请求到后端 API /api/bootstrap/admin | 触发事件：click | 绑定函数：app.js 中的事件监听器 -->
+            <button id="setupBtn">保存管理员账号</button>
+            </section>
+
+            <!-- 区域：loginCard（登录卡片） | 用途：管理员登录验证 | 显示条件：系统已初始化但用户未登录时显示 | 关键元素：loginUsername, loginPassword, loginBtn -->
+            <section id="loginCard" class="card hidden">
+            <!-- section 语义标签表示独立区域，id="loginCard" 用于 JavaScript 控制显示/隐藏，默认隐藏 -->
+            <h2>登录</h2>
+            <!-- 卡片标题：提示用户这是登录界面 -->
+            <label>用户名</label>
+            <!-- 标签：提供用户名字段的可访问性说明 -->
+            <!-- 输入框 id="loginUsername" | 用途：输入管理员用户名进行身份验证 | 触发事件：无 | 绑定函数：loginBtn 点击时读取 value -->
+            <input id="loginUsername" placeholder="管理员用户名" />
+            <label>密码</label>
+            <!-- 标签：提供密码字段的可访问性说明 -->
+            <!-- 输入框 id="loginPassword" | 用途：输入管理员密码进行身份验证（type="password" 隐藏输入） | 触发事件：无 | 绑定函数：loginBtn 点击时读取 value -->
+            <input id="loginPassword" type="password" placeholder="管理员密码" />
+            <!-- 按钮 id="loginBtn" | 用途：提交登录请求到后端 API /api/login | 触发事件：click | 绑定函数：app.js 中的登录事件监听器 -->
+            <button id="loginBtn">登录</button>
+            </section>
+
+            <!-- 区域：panelCard（主控制面板） | 用途：证书申请与管理（登录成功后显示） | 显示条件：用户登录成功后显示 | 关键元素：domainsInput, emailInput, applyBtn, logoutBtn, certTable -->
+            <section id="panelCard" class="card hidden">
+            <!-- section 语义标签表示主功能区域，id="panelCard" 用于 JavaScript 控制显示/隐藏，默认隐藏 -->
+            <div class="row between">
+                <!-- 行容器：使用 flexbox 布局，两端对齐（标题居左，退出按钮居右） -->
+                <h2>证书申请</h2>
+                <!-- 区域标题：提示用户这是证书申请功能区 -->
+                <!-- 按钮 id="logoutBtn" | 用途：退出登录，清除 Session 并返回登录界面 | 触发事件：click | 绑定函数：app.js 中的退出登录事件监听器 -->
+                <button id="logoutBtn" class="secondary">退出登录</button>
+                <!-- 次要按钮样式（class="secondary"），视觉上弱化以避免误操作 -->
+            </div>
+            <label>域名列表（支持单域名、多域名、通配符；逗号/空格/换行分隔）</label>
+            <!-- 标签：说明域名输入框的用途与支持的格式（提供用户指引） -->
+            <!-- 文本域 id="domainsInput" | 用途：输入需要申请证书的域名列表（支持多行输入、通配符域名） | 触发事件：无 | 绑定函数：applyBtn 点击时读取 value -->
+            <textarea id="domainsInput" rows="4" placeholder="example.com\n*.example.com"></textarea>
+            <!-- 多行文本输入框，rows="4" 设置显示 4 行高度，placeholder 提供输入示例 -->
+            <label>ACME 邮箱</label>
+            <!-- 标签：说明邮箱输入框的用途（ACME 协议需要联系邮箱） -->
+            <!-- 输入框 id="emailInput" | 用途：输入 ACME 账户邮箱地址（用于证书到期提醒） | 触发事件：无 | 绑定函数：applyBtn 点击时读取 value -->
+            <input id="emailInput" placeholder="admin@example.com" />
+            <!-- 按钮 id="applyBtn" | 用途：提交证书申请请求到后端 API /api/certificates（POST） | 触发事件：click | 绑定函数：app.js 中的证书申请事件监听器 -->
+            <button id="applyBtn">申请证书</button>
+            <h2>证书管理</h2>
+            <!-- 区域标题：提示用户这是证书管理与列表展示区 -->
+            <table>
+                <!-- 表格：用于展示已申请的证书列表，包含 ID、域名、到期时间、状态等信息 -->
+                <thead>
+                <!-- 表头：定义表格的列标题 -->
+                <tr>
+                    <!-- 表头行 -->
+                    <th>ID</th>
+                    <!-- 列标题：证书的唯一标识符 -->
+                    <th>主域名</th>
+                    <!-- 列标题：证书的主域名（Primary Domain） -->
+                    <th>域名列表</th>
+                    <!-- 列标题：证书覆盖的所有域名（包括通配符域名） -->
+                    <th>到期时间</th>
+                    <!-- 列标题：证书的有效期截止时间 -->
+                    <th>状态</th>
+                    <!-- 列标题：证书的当前状态（如：申请中、已签发、已过期等） -->
+                    <th>操作</th>
+                    <!-- 列标题：可执行的操作（如：下载证书 ZIP 包） -->
+                </tr>
+                </thead>
+                <!-- tbody id="certTable" | 用途：动态渲染证书列表行（由 app.js 的 renderCertificates 函数填充） | 触发事件：无 | 绑定函数：app.js 中的 loadCertificates 和 renderCertificates -->
+                <tbody id="certTable"></tbody>
+                <!-- 表格主体：初始为空，JavaScript 会在页面加载和证书申请成功后动态插入 <tr> 行 -->
+            </table>
+            </section>
+
+            <!-- 元素 id="message" | 用途：显示全局操作提示消息（成功/失败提示） | 触发事件：无 | 绑定函数：app.js 的 setMessage 函数动态设置文本和样式 -->
+            <p id="message" class="msg"></p>
+            <!-- 段落元素：初始为空，JavaScript 会根据操作结果动态更新文本内容与 CSS 类名（msg 或 msg ok） -->
+        </main>
+        <!-- 主容器结束 -->
+        <script src="/web/app.js"></script>
+        <!-- 外部资源依赖：引入 JavaScript 脚本 app.js，处理所有交互逻辑（事件监听、API 调用、DOM 操作） -->
+    </body>
+    <!-- 文档主体结束 -->
+</html>
+<!-- 文档结束 -->

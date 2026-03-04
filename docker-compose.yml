@@ -1,0 +1,87 @@
+# 文件：docker-compose.yml | 用途：容器化运行 vt-cert-panel | 关键字段：services、build、ports、volumes、environment
+# 核心特点：完全依赖环境变量启动（无需配置文件），缺少必填变量时 docker compose 启动会直接报错
+
+# === Docker 服务定义 === | 用途：定义 vt-cert-panel 容器服务的构建、运行、网络、存储配置
+services:
+    # vt-cert-panel 服务标识符 | 含义：此服务的逻辑名称（用于 docker compose 命令和内部网络通信） | 类型：service name
+    vt-cert-panel:
+        # build | 含义：容器镜像构建配置 | 类型：string（路径） | 作用：. 表示在当前目录查找 Dockerfile
+        # 用途：docker compose up 时会自动执行 Dockerfile，从 Go 源代码编译生成镜像
+        build: .
+        # container_name | 含义：运行中的容器显示名称 | 类型：string | 示例：docker ps 时显示的名称便于快速识别
+        # 用途：便于用 docker logs vt-cert-panel、docker exec vt-cert-panel 等命令直接操作
+        container_name: vt-cert-panel
+        # restart | 含义：容器异常退出时的重启策略 | 类型：string | 可选值：no/always/unless-stopped/on-failure
+        # 当前配置：unless-stopped = 容器异常退出时自动重启，除非手动 docker stop 停止
+        # 生产推荐：unless-stopped 或 on-failure:3（失败重启 3 次后停止，防止无限重启）
+        restart: unless-stopped
+        # ports | 含义：宿主机与容器端口映射 | 类型：array 格式列表 | 格式："宿主机端口:容器内部端口"
+        # 当前配置：8080:8080 = 宿主机的 8080 端口转发至容器内的 8080 端口（Go 服务监听端口）
+        # 用途：浏览器访问 http://localhost:8080 时，请求被转发到容器内的应用
+        ports:
+            - "8080:8080"
+        # volumes | 含义：宿主机目录与容器目录的挂载映射 | 类型：array 格式列表 | 格式："宿主机路径:容器路径"
+        # 作用：使容器内的数据（SQLite 数据库、证书文件）持久化到宿主机，容器删除后数据不丢失
+        volumes:
+            # ./data:/app/data | 含义：将宿主机 ./data 目录挂载到容器内 /app/data | 用途：存储 SQLite 数据库与申请的证书文件
+            # 效果：容器内 /app/data 的所有改动会同步到宿主机 ./data 目录（双向同步）
+            - ./data:/app/data
+        # environment | 含义：容器运行时注入的环境变量 | 类型：array 格式（KEY=VALUE） | 作用：应用程序启动时读取这些变量
+        # 注意：所有必填变量使用 ${VAR:?error message} 格式，缺失时 docker compose 会报错退出
+        # 可选变量使用 ${VAR:-default value} 格式，缺失时使用默认值
+        environment:
+            # VT_CERT_TECHNITIUM_BASE_URL | 含义：Technitium DNS API 服务地址 | 类型：string（URL）| 必需：是（缺失时启动失败）
+            # 示例：http://192.168.1.100:5380 或 http://dns.example.com:5380（不包含末尾 /）
+            # 用途：所有 DNS TXT 记录操作（添加、删除）都通过此 URL 进行
+            # 来源：从宿主机环境变量或 docker compose 命令行 -e 参数注入
+            VT_CERT_TECHNITIUM_BASE_URL: ${VT_CERT_TECHNITIUM_BASE_URL:?missing VT_CERT_TECHNITIUM_BASE_URL}
+
+            # VT_CERT_TECHNITIUM_TOKEN | 含义：Technitium API 认证 token（API Key） | 类型：string（64 位十六进制） | 必需：是（缺失时启动失败）
+            # ⚠️ 敏感信息：此值相当于密码，绝不要提交到代码库，泄露后应立即重新生成
+            # 获取方法：在 Technitium 控制台 -> Settings -> API 中生成
+            # 用途：每个 Technitium API 请求都需要此 token 进行身份验证
+            VT_CERT_TECHNITIUM_TOKEN: ${VT_CERT_TECHNITIUM_TOKEN:?missing VT_CERT_TECHNITIUM_TOKEN}
+
+            # VT_CERT_ACME_USER_EMAIL | 含义：ACME 账户邮箱（Let's Encrypt 通知地址） | 类型：string（email）| 必需：是（缺失时启动失败）
+            # 示例：admin@example.com
+            # 用途：Let's Encrypt 证书过期前会通过此邮箱发送通知，账户恢复等也使用此邮箱
+            # 推荐：使用真实有效的邮箱，便于及时收到证书过期warning
+            VT_CERT_ACME_USER_EMAIL: ${VT_CERT_ACME_USER_EMAIL:?missing VT_CERT_ACME_USER_EMAIL}
+
+            # VT_CERT_ACME_DIRECTORY_URL | 含义：ACME 服务器目录 URL | 类型：string（URL）| 必需：否（缺失使用默认值）
+            # 默认值：https://acme-v02.api.letsencrypt.org/directory（Let's Encrypt 生产环境，颁发真实证书）
+            # 测试环境：https://acme-staging-v02.api.letsencrypt.org/directory（颁发测试证书，不受信任但无限制）
+            # 用途：应用程序通过此 URL 连接 ACME 服务器，执行证书申请和续期操作
+            VT_CERT_ACME_DIRECTORY_URL: ${VT_CERT_ACME_DIRECTORY_URL:-https://acme-v02.api.letsencrypt.org/directory}
+
+            # VT_CERT_TECHNITIUM_DEFAULT_TTL | 含义：DNS TXT 记录的默认生存时间 | 类型：int（秒） | 必需：否（缺失使用默认值 120）
+            # 默认值：120 秒（足以完成 ACME 验证，又不会长久污染 DNS 缓存）
+            # 范围建议：30-300 秒（太小会导致 DNS 传播失败，太大会影响续期效率）
+            # 用途：在添加临时 TXT 记录时使用此值，确保验证后快速删除
+            VT_CERT_TECHNITIUM_DEFAULT_TTL: ${VT_CERT_TECHNITIUM_DEFAULT_TTL:-120}
+
+            # VT_CERT_TECHNITIUM_PROPAGATION_SEC | 含义：DNS 记录传播等待时间 | 类型：int（秒） | 必需：否（缺失使用默认值 120）
+            # 默认值：120 秒（在添加 TXT 记录后，等待此时间使其全球传播）
+            # 范围建议：60-180 秒（太短会导致 ACME 验证失败，太长会拖累续期速度）
+            # 用途：添加 DNS 记录后，在 ACME 验证前等待足够时间，确保所有 DNS 解析器已缓存新记录
+            VT_CERT_TECHNITIUM_PROPAGATION_SEC: ${VT_CERT_TECHNITIUM_PROPAGATION_SEC:-120}
+
+            # VT_CERT_AUTORENEW_ENABLED | 含义：是否启用自动续期功能 | 类型：bool（true/false）| 必需：否（缺失使用默认值 true）
+            # true = 启用自动续期（推荐），后台 worker 定期检查并续期即将过期的证书
+            # false = 禁用自动续期，仅支持手动申请和管理证书
+            # 用途：控制后台续期 worker 是否启动
+            VT_CERT_AUTORENEW_ENABLED: ${VT_CERT_AUTORENEW_ENABLED:-true}
+
+            # VT_CERT_AUTORENEW_CHECK_INTERVAL_HOUR | 含义：续期检查周期 | 类型：int（小时） | 必需：否（缺失使用默认值 24）
+            # 默认值：24 小时（每天检查一次）
+            # 示例：1 = 每小时检查一次 | 12 = 每 12 小时检查一次
+            # 用途：后台 worker 每隔多长时间检查一次证书的过期时间
+            # 权衡：过频繁会增加 CPU 负担，过稀疏会导致错过续期机会
+            VT_CERT_AUTORENEW_CHECK_INTERVAL_HOUR: ${VT_CERT_AUTORENEW_CHECK_INTERVAL_HOUR:-24}
+
+            # VT_CERT_AUTORENEW_RENEW_BEFORE_DAYS | 含义：距离过期多少天时开始续期 | 类型：int（天） | 必需：否（缺失使用默认值 30）
+            # 默认值：30 天（证书还有 30 天就过期时，触发续期流程）
+            # 示例：7 = 提前 7 天续期 | 60 = 提前 60 天续期
+            # 用途：定义续期的触发条件，给 ACME 验证和证书配置留足缓冲时间
+            # 建议：>= 7 天，确保即使续期失败也有充分时间人工干预
+            VT_CERT_AUTORENEW_RENEW_BEFORE_DAYS: ${VT_CERT_AUTORENEW_RENEW_BEFORE_DAYS:-30}
